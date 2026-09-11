@@ -344,7 +344,7 @@ static bool prv_restore_from_settings_dict() {
   ret = prv_parse_settings_dict(&iter);
 
 cleanup:
-  if (dictbytes == NULL)
+  if (dictbytes != NULL)
     free(dictbytes);
   return ret;
 }
@@ -582,6 +582,7 @@ static bool prv_parse_settings_dict(DictionaryIterator *iter) {
     settings.SmoothMinuteHand = settings.DigitalHour && updates > 1;
     settings.MinuteHandUpdateIntervalSec = (60 + updates / 2) / updates;
 
+    tick_timer_service_unsubscribe();
     tick_timer_service_subscribe((use_minute_hand() && settings.SmoothMinuteHand) ?
       SECOND_UNIT : MINUTE_UNIT, tick_handler);
 
